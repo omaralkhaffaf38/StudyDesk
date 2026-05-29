@@ -1,3 +1,4 @@
+cat > /mnt/user-data/outputs/study-dashboard.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,152 +7,187 @@
 <title>StudyDesk — GCSE Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#0f1117;--bg2:#13151f;--card:#1a1d27;--border:#2a2e3f;
-    --text:#e8e8e8;--muted:#888;--dim:#444;
-    --accent:#7c6af7;--gold:#f4c430;
-    --serif:'Playfair Display',Georgia,serif;
-    --sans:'DM Sans',sans-serif;
-  }
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
-  ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#13151f;--card:#1a1d27;--border:#2a2e3f;
+  --text:#e8e8e8;--muted:#888;--dim:#444;
+  --accent:#7c6af7;--gold:#f4c430;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-  /* HEADER */
-  #header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px}
-  #header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-  #logo{padding:18px 0}
-  #logo h1{font-family:var(--serif);font-size:24px;font-weight:900;color:#fff;letter-spacing:-0.5px}
-  #logo p{font-size:11px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
-  #tabs{display:flex;gap:4px}
-  .tab-btn{background:none;border:none;cursor:pointer;padding:8px 20px;border-radius:8px 8px 0 0;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s}
-  .tab-btn.active{color:#fff;background:var(--card);border-bottom:2px solid var(--accent)}
-  .tab-btn:hover:not(.active){color:#ccc}
+/* HEADER */
+#header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 32px;position:sticky;top:0;z-index:100}
+#header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+#logo{padding:16px 0}
+#logo h1{font-family:var(--serif);font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+#logo p{font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+#tabs{display:flex;gap:4px}
+.tab-btn{background:none;border:none;cursor:pointer;padding:8px 18px;border-radius:8px 8px 0 0;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn.active{color:#fff;background:var(--card);border-bottom:2px solid var(--accent)}
+.tab-btn:hover:not(.active){color:#ccc}
 
-  /* MAIN */
-  #main{max-width:1100px;margin:0 auto;padding:28px 32px}
-  .pane{display:none}.pane.active{display:block;animation:fadeIn .25s ease}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* MAIN */
+#main{max-width:1100px;margin:0 auto;padding:26px 32px}
+.pane{display:none}.pane.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px}
 
-  /* CARD */
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px}
+/* BANNER */
+#active-banner{background:linear-gradient(135deg,#1e1b4b,#2d1f6e);border:1px solid #6c5ce7;border-radius:12px;padding:14px 22px;display:none;align-items:center;justify-content:space-between;margin-bottom:20px}
+#banner-dot{width:10px;height:10px;border-radius:50%;background:#7c6af7;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+#banner-name{font-family:var(--serif);font-size:18px;font-weight:700;color:#fff;margin-top:2px}
+#banner-label{font-size:11px;color:#a090f0;text-transform:uppercase;letter-spacing:1px}
+#banner-time{font-size:28px;font-weight:600;color:#fff;letter-spacing:-1px}
 
-  /* TIMER BANNER */
-  #active-banner{background:linear-gradient(135deg,#1e1b4b,#2d1f6e);border:1px solid #6c5ce7;border-radius:12px;padding:14px 22px;display:none;align-items:center;justify-content:space-between;margin-bottom:22px}
-  #banner-dot{width:10px;height:10px;border-radius:50%;background:#7c6af7;animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  #banner-name{font-family:var(--serif);font-size:19px;font-weight:700;color:#fff;margin-top:2px}
-  #banner-label{font-size:11px;color:#a090f0;text-transform:uppercase;letter-spacing:1px}
-  #banner-time{font-size:30px;font-weight:600;color:#fff;letter-spacing:-1px;font-family:var(--sans)}
+/* LAYOUT */
+.two-col{display:grid;grid-template-columns:300px 1fr;gap:20px}
 
-  /* LAYOUT */
-  .two-col{display:grid;grid-template-columns:300px 1fr;gap:22px}
-  .three-col{display:grid;grid-template-columns:240px 1fr;gap:22px;min-height:480px}
+/* SUBJECTS */
+#subject-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.subj-row{display:flex;align-items:center;gap:7px;padding:9px 10px;border-radius:8px;background:var(--bg2);transition:background .15s}
+.subj-row:hover{background:#1f2330}
+.subj-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.subj-name{flex:1;font-size:13px;font-weight:500}
+.subj-time{font-size:11px;color:var(--dim);min-width:36px;text-align:right}
+.btn-start,.btn-stop{border:none;cursor:pointer;border-radius:6px;font-family:var(--sans);font-weight:600;font-size:11px;padding:4px 9px;transition:all .15s}
+.btn-start{color:#fff}
+.btn-stop{background:#c0392b;color:#fff}
+.btn-add-time{border:none;cursor:pointer;border-radius:6px;font-family:var(--sans);font-weight:600;font-size:11px;padding:4px 9px;background:#2a2e3f;color:#aaa;transition:all .15s}
+.btn-add-time:hover{background:#3a3f55;color:#fff}
+.btn-del{background:none;border:none;color:var(--dim);font-size:15px;padding:2px 5px;cursor:pointer}
+.btn-del:hover{color:#e74c3c}
 
-  /* SUBJECTS PANEL */
-  #subject-list{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
-  .subj-row{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;background:var(--bg2);transition:background .15s}
-  .subj-row:hover{background:#1f2330}
-  .subj-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-  .subj-name{flex:1;font-size:13px;font-weight:500}
-  .subj-time{font-size:11px;color:var(--dim)}
-  .btn-start,.btn-stop,.btn-del{border:none;cursor:pointer;border-radius:6px;font-family:var(--sans);font-weight:600;font-size:11px;padding:4px 10px;transition:all .15s}
-  .btn-start{color:#fff}
-  .btn-stop{background:#c0392b;color:#fff}
-  .btn-del{background:none;color:var(--dim);font-size:15px;padding:2px 6px}
-  .btn-del:hover{color:#e74c3c}
+/* ADD SUBJECT */
+.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+.label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+#subj-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;margin-bottom:8px}
+#subj-input::placeholder{color:#444}
+#color-swatches{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.swatch{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s}
+.swatch.sel{border-color:#fff;transform:scale(1.25)}
+#btn-add-subj{width:100%;background:var(--accent);color:#fff;border:none;cursor:pointer;padding:8px;border-radius:7px;font-family:var(--sans);font-weight:600;font-size:13px;transition:filter .15s}
+#btn-add-subj:hover{filter:brightness(1.1)}
+#total-box{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;margin-top:12px}
+#total-val{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--accent)}
 
-  /* ADD SUBJECT */
-  .divider{border:none;border-top:1px solid var(--border);margin:14px 0}
-  .label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
-  #subj-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;margin-bottom:9px}
-  #subj-input::placeholder{color:#444}
-  #color-swatches{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
-  .swatch{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s}
-  .swatch.sel{border-color:#fff;transform:scale(1.25)}
-  #btn-add-subj{width:100%;background:var(--accent);color:#fff;border:none;cursor:pointer;padding:9px;border-radius:7px;font-family:var(--sans);font-weight:600;font-size:13px;transition:filter .15s}
-  #btn-add-subj:hover{filter:brightness(1.1)}
+/* TIMETABLE */
+#timetable-wrap{padding:20px;overflow-x:auto}
+#timetable-wrap h2{font-family:var(--serif);font-size:16px;font-weight:700;color:#fff;margin-bottom:16px}
+#timetable{width:100%;border-collapse:collapse;font-family:var(--sans)}
+#timetable th{text-align:left;padding:6px 10px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);font-weight:400}
+#timetable th.today{color:var(--accent);font-weight:700}
+#timetable td{padding:9px 10px;font-size:13px;border-bottom:1px solid #1a1d27}
+#timetable tr:nth-child(even) td{background:var(--bg2)}
+.cell-chip{border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;display:inline-block}
+.cell-dash{color:#2a2e3f;font-size:14px}
+.cell-total{font-family:var(--serif);font-size:13px;font-weight:700}
 
-  /* TOTAL BOX */
-  #total-box{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;margin-top:14px}
-  #total-val{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--accent)}
+/* MANUAL TIME MODAL */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(3px)}
+#modal-overlay.open{display:flex}
+#modal{background:#1a1d27;border:1px solid var(--border);border-radius:16px;padding:26px;width:340px;max-width:90vw}
+#modal h3{font-family:var(--serif);font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+#modal p{font-size:12px;color:var(--muted);margin-bottom:20px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.modal-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-family:var(--sans);font-size:14px;outline:none}
+.modal-input::placeholder{color:#444}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#modal-btns{display:flex;gap:8px;margin-top:18px}
+#btn-modal-cancel{flex:1;background:var(--bg2);color:var(--muted);border:1px solid var(--border);cursor:pointer;padding:9px;border-radius:7px;font-family:var(--sans);font-weight:600;font-size:13px}
+#btn-modal-save{flex:2;background:var(--accent);color:#fff;border:none;cursor:pointer;padding:9px;border-radius:7px;font-family:var(--sans);font-weight:600;font-size:13px}
 
-  /* TIMETABLE */
-  #timetable-wrap{padding:22px;overflow-x:auto}
-  #timetable-wrap h2{font-family:var(--serif);font-size:17px;font-weight:700;color:#fff;margin-bottom:18px}
-  #timetable{width:100%;border-collapse:collapse;font-family:var(--sans)}
-  #timetable th{text-align:left;padding:7px 10px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);font-weight:400}
-  #timetable th.today{color:var(--accent);font-weight:700}
-  #timetable td{padding:9px 10px;font-size:13px;border-bottom:1px solid #1a1d27}
-  #timetable tr:nth-child(even) td{background:var(--bg2)}
-  .cell-chip{border-radius:6px;padding:3px 7px;font-size:11px;font-weight:600;display:inline-block}
-  .cell-dash{color:#333;font-size:12px}
-  .cell-total{font-family:var(--serif);font-size:13px;font-weight:700}
-  #tt-empty{text-align:center;padding:38px;color:var(--dim);font-size:13px}
+/* STATS */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{padding:18px 20px;border-radius:12px}
+.stat-card .sc-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.stat-card .sc-val{font-family:var(--serif);font-size:26px;font-weight:900;line-height:1}
+.stat-card .sc-sub{font-size:11px;margin-top:5px;opacity:.6}
 
-  /* RESULTS */
-  #results-header{background:linear-gradient(135deg,#1a1200,#2d2000);border:1px solid #5a4500;border-radius:14px;padding:24px 28px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between}
-  #results-header h2{font-family:var(--serif);font-size:26px;font-weight:900;color:var(--gold)}
-  #results-header p{font-size:13px;color:#a08030;margin-top:3px}
-  #grade-legend{display:flex;gap:5px;margin-top:8px}
-  .grade-dot{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
-  #results-list{display:flex;flex-direction:column;gap:10px}
-  .result-row{padding:18px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .result-subj{display:flex;align-items:center;gap:9px;min-width:190px;flex:0 0 190px}
-  .result-subj span{font-family:var(--serif);font-size:15px;font-weight:700;color:#fff}
-  .mark-input{width:85px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;color:var(--text);font-family:var(--sans);font-size:14px;font-weight:600;text-align:center;outline:none}
-  .mark-input::placeholder{color:#444}
-  .grade-picker{display:flex;gap:5px;flex-wrap:wrap;flex:1}
-  .grade-btn{width:38px;height:38px;border-radius:8px;border:2px solid var(--border);background:var(--bg2);color:#555;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
-  .grade-btn:hover{transform:scale(1.1)}
-  .grade-btn.sel{border-color:transparent;color:#fff}
-  .result-badge{border-radius:12px;padding:10px 16px;text-align:center;min-width:82px;flex-shrink:0;display:none}
-  .result-badge .big{font-family:var(--serif);font-size:30px;font-weight:900;line-height:1}
-  .result-badge .small{font-size:10px;margin-top:3px;font-family:var(--sans)}
+#chart-section{padding:22px;margin-bottom:20px}
+#chart-section h2{font-family:var(--serif);font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
+#chart-section p{font-size:12px;color:var(--muted);margin-bottom:20px}
+#chart-tabs{display:flex;gap:6px;margin-bottom:20px}
+.chart-tab{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.chart-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+#bar-chart{display:flex;align-items:flex-end;gap:6px;height:180px;padding:0 4px}
+.bar-group{display:flex;flex-direction:column;align-items:center;flex:1;gap:5px;height:100%}
+.bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%}
+.bar{width:100%;border-radius:5px 5px 0 0;transition:height .4s cubic-bezier(.4,0,.2,1);min-height:0;cursor:pointer;position:relative}
+.bar:hover{filter:brightness(1.2)}
+.bar-label{font-size:10px;color:var(--muted);text-align:center;white-space:nowrap}
+.bar-val{font-size:9px;color:var(--muted);text-align:center}
+#chart-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
-  /* SUMMARY */
-  #summary{padding:22px;margin-top:22px;background:#0d0f18;border:1px solid #5a4500;display:none}
-  #summary h3{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:14px}
-  .sum-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #1a1d27}
-  .sum-name{font-size:13px;color:#ccc;display:flex;align-items:center;gap:7px}
-  .sum-grade{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
-  .sum-mark{font-size:11px;color:var(--dim)}
+#breakdown-section{padding:20px}
+#breakdown-section h2{font-family:var(--serif);font-size:15px;font-weight:700;color:#fff;margin-bottom:14px}
+.breakdown-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.breakdown-bar-wrap{flex:1;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+.breakdown-bar{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.breakdown-name{font-size:12px;min-width:130px;display:flex;align-items:center;gap:6px}
+.breakdown-time{font-size:12px;color:var(--muted);min-width:60px;text-align:right;font-family:var(--serif)}
 
-  /* NOTES */
-  .note-subj-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:all .15s}
-  .note-subj-item:hover{background:#1f2330}
-  .note-subj-item.active{background:var(--card);border-color:var(--border)}
-  .note-subj-item .badge{border-radius:10px;padding:1px 7px;font-size:10px;font-weight:600}
-  #note-editor{padding:22px;display:none}
-  #note-editor h2{font-family:var(--serif);font-size:19px;font-weight:700;color:#fff;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-  #note-textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 15px;color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.7;resize:vertical;outline:none;min-height:160px}
-  #note-textarea::placeholder{color:#444}
-  .files-header{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}
-  #btn-attach{background:var(--accent);color:#fff;border:none;cursor:pointer;padding:7px 16px;border-radius:7px;font-family:var(--sans);font-weight:600;font-size:12px;transition:filter .15s}
-  #btn-attach:hover{filter:brightness(1.1)}
-  #drop-zone{border:2px dashed var(--border);border-radius:10px;padding:30px;text-align:center;cursor:pointer;transition:border-color .2s}
-  #drop-zone:hover{border-color:var(--accent)}
-  #drop-zone .icon{font-size:28px;margin-bottom:7px}
-  #drop-zone p{font-size:13px;color:#555}
-  #files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
-  .file-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-  .file-thumb{width:100%;height:90px;object-fit:cover;display:block}
-  .file-info{padding:9px 11px}
-  .file-name{font-size:11px;color:#ccc;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
-  .file-size{font-size:10px;color:#555;margin-bottom:7px}
-  .file-actions{display:flex;gap:5px}
-  .f-open{flex:1;background:#2a2e3f;color:#aaa;text-decoration:none;padding:4px 8px;border-radius:5px;font-size:10px;font-weight:600;text-align:center}
-  .f-del{background:#2a1a1a;color:#e74c3c;border:none;cursor:pointer;padding:4px 8px;border-radius:5px;font-size:10px;font-weight:600}
-  #note-empty{display:flex;align-items:center;justify-content:center;min-height:300px}
-  #note-empty div{text-align:center;font-size:13px;color:#444}
-
-  /* UTILS */
-  .btn-primary{background:var(--accent);color:#fff;border:none;cursor:pointer;padding:9px 20px;border-radius:8px;font-family:var(--sans);font-weight:600;font-size:13px;transition:filter .15s}
-  .btn-primary:hover{filter:brightness(1.1)}
-  .no-items{text-align:center;padding:36px;color:var(--dim);font-size:13px;font-family:var(--sans)}
+/* RESULTS */
+#results-header{background:linear-gradient(135deg,#1a1200,#2d2000);border:1px solid #5a4500;border-radius:14px;padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+#results-header h2{font-family:var(--serif);font-size:24px;font-weight:900;color:var(--gold)}
+#results-header p{font-size:12px;color:#a08030;margin-top:3px}
+#grade-legend{display:flex;gap:4px;margin-top:7px}
+.grade-dot{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+#results-list{display:flex;flex-direction:column;gap:10px}
+.result-row{padding:16px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.result-subj{display:flex;align-items:center;gap:8px;min-width:180px;flex:0 0 180px}
+.result-subj span{font-family:var(--serif);font-size:14px;font-weight:700;color:#fff}
+.mark-input{width:80px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;color:var(--text);font-family:var(--sans);font-size:14px;font-weight:600;text-align:center;outline:none}
+.mark-input::placeholder{color:#444}
+.grade-picker{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+.grade-btn{width:36px;height:36px;border-radius:8px;border:2px solid var(--border);background:var(--bg2);color:#555;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.grade-btn:hover{transform:scale(1.1)}
+.grade-btn.sel{border-color:transparent;color:#fff}
+.result-badge{border-radius:12px;padding:9px 14px;text-align:center;min-width:76px;flex-shrink:0;display:none}
+.result-badge .big{font-family:var(--serif);font-size:28px;font-weight:900;line-height:1}
+.result-badge .small{font-size:10px;margin-top:3px}
+#summary{padding:20px;margin-top:20px;background:#0d0f18;border:1px solid #5a4500;display:none;border-radius:12px}
+#summary h3{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:9px;margin-bottom:12px}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1a1d27}
+.sum-name{font-size:13px;color:#ccc;display:flex;align-items:center;gap:7px}
+.sum-grade{width:27px;height:27px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.sum-mark{font-size:11px;color:var(--dim)}
+.no-items{text-align:center;padding:32px;color:var(--dim);font-size:13px}
 </style>
 </head>
 <body>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <h3>Add Study Time</h3>
+    <p id="modal-subj-name">Adding time for subject</p>
+    <div class="modal-row">
+      <div class="modal-field">
+        <label>Hours</label>
+        <input class="modal-input" id="m-hours" type="number" min="0" max="23" placeholder="0"/>
+      </div>
+      <div class="modal-field">
+        <label>Minutes</label>
+        <input class="modal-input" id="m-mins" type="number" min="0" max="59" placeholder="0"/>
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Date</label>
+      <input class="modal-input" id="m-date" type="date"/>
+    </div>
+    <div id="modal-btns">
+      <button id="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+      <button id="btn-modal-save" onclick="saveManualTime()">Add Time</button>
+    </div>
+  </div>
+</div>
 
 <div id="header">
   <div id="header-inner">
@@ -160,18 +196,17 @@
       <p>GCSE Revision Tracker</p>
     </div>
     <div id="tabs">
-      <button class="tab-btn active" onclick="switchTab('timer')">⏱ Study Timer</button>
-      <button class="tab-btn" onclick="switchTab('results')">🎓 Results</button>
-      <button class="tab-btn" onclick="switchTab('notes')">📎 Notes</button>
+      <button class="tab-btn active" onclick="switchTab('timer',this)">⏱ Study Timer</button>
+      <button class="tab-btn" onclick="switchTab('stats',this)">📊 Statistics</button>
+      <button class="tab-btn" onclick="switchTab('results',this)">🎓 Results</button>
     </div>
   </div>
 </div>
 
 <div id="main">
 
-  <!-- ══ TIMER PANE ══ -->
+  <!-- TIMER -->
   <div id="pane-timer" class="pane active">
-
     <div id="active-banner">
       <div style="display:flex;align-items:center;gap:14px">
         <div id="banner-dot"></div>
@@ -180,17 +215,15 @@
           <div id="banner-name">—</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:18px">
+      <div style="display:flex;align-items:center;gap:16px">
         <div id="banner-time">0s</div>
-        <button class="btn-stop" style="padding:9px 20px;font-size:13px" onclick="stopTimer()">■ Stop</button>
+        <button class="btn-stop" style="padding:8px 18px;font-size:13px" onclick="stopTimer()">■ Stop</button>
       </div>
     </div>
-
     <div class="two-col">
-      <!-- Left: subjects -->
       <div>
-        <div class="card" style="padding:18px">
-          <div style="font-family:var(--serif);font-size:15px;font-weight:700;color:#fff;margin-bottom:14px">Subjects</div>
+        <div class="card" style="padding:16px">
+          <div style="font-family:var(--serif);font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">Subjects</div>
           <div id="subject-list"></div>
           <hr class="divider"/>
           <div class="label">Add Subject</div>
@@ -199,24 +232,39 @@
           <button id="btn-add-subj" onclick="addSubject()">+ Add Subject</button>
         </div>
         <div class="card" id="total-box">
-          <div style="font-size:12px;color:var(--muted)">Total Study Time</div>
-          <div id="total-val">0s</div>
+          <div style="font-size:12px;color:var(--muted)">Total Study Time (all time)</div>
+          <div id="total-val">—</div>
         </div>
       </div>
-
-      <!-- Right: timetable -->
       <div class="card" id="timetable-wrap">
-        <h2>Weekly Timetable</h2>
-        <table id="timetable">
-          <thead id="tt-head"></thead>
-          <tbody id="tt-body"></tbody>
-        </table>
-        <div id="tt-empty" style="display:none">Add subjects to start tracking</div>
+        <h2>This Week's Timetable</h2>
+        <table id="timetable"><thead id="tt-head"></thead><tbody id="tt-body"></tbody></table>
+        <div id="tt-empty" style="display:none;text-align:center;padding:36px;color:var(--dim);font-size:13px">Add subjects to start tracking</div>
       </div>
     </div>
   </div>
 
-  <!-- ══ RESULTS PANE ══ -->
+  <!-- STATS -->
+  <div id="pane-stats" class="pane">
+    <div class="stat-cards" id="stat-cards"></div>
+    <div class="card" id="chart-section">
+      <h2>Study Time Chart</h2>
+      <p>Total minutes studied per day across all subjects</p>
+      <div id="chart-tabs">
+        <div class="chart-tab active" onclick="setChartView('week',this)">This Week</div>
+        <div class="chart-tab" onclick="setChartView('month',this)">This Month</div>
+        <div class="chart-tab" onclick="setChartView('year',this)">This Year</div>
+      </div>
+      <div id="bar-chart"></div>
+      <div id="chart-legend"></div>
+    </div>
+    <div class="card" id="breakdown-section">
+      <h2 id="breakdown-title">Subject Breakdown</h2>
+      <div id="breakdown-rows"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
   <div id="pane-results" class="pane">
     <div id="results-header">
       <div>
@@ -224,107 +272,157 @@
         <p>Enter your marks and select your grade below</p>
       </div>
       <div>
-        <div style="font-size:11px;color:#a08030;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Grade Scale</div>
+        <div style="font-size:11px;color:#a08030;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Grade Scale</div>
         <div id="grade-legend"></div>
       </div>
     </div>
     <div id="results-list"></div>
-    <div class="card" id="summary">
-      <h3>📋 Results Summary</h3>
-      <div id="summary-rows"></div>
-    </div>
-  </div>
-
-  <!-- ══ NOTES PANE ══ -->
-  <div id="pane-notes" class="pane">
-    <div class="three-col">
-      <div class="card" style="padding:14px;height:fit-content">
-        <div style="font-family:var(--serif);font-size:15px;font-weight:700;color:#fff;margin-bottom:12px">Subjects</div>
-        <div id="notes-subj-list"></div>
-      </div>
-      <div class="card" id="note-empty"><div><div style="font-size:42px;margin-bottom:10px">📖</div>Select a subject to view notes</div></div>
-      <div class="card" id="note-editor">
-        <h2><span id="note-dot" class="subj-dot" style="width:13px;height:13px"></span><span id="note-title">—</span></h2>
-        <div class="label">Notes</div>
-        <textarea id="note-textarea" placeholder="Write your notes here…" oninput="saveNoteText()"></textarea>
-        <div class="files-header">
-          <div class="label" style="margin:0">Attached Files</div>
-          <button id="btn-attach" onclick="document.getElementById('file-input').click()">📎 Attach File</button>
-        </div>
-        <input type="file" id="file-input" multiple style="display:none" onchange="handleFiles(event)"/>
-        <div id="drop-zone" onclick="document.getElementById('file-input').click()">
-          <div class="icon">📁</div>
-          <p>Click to attach files — PDFs, images, documents</p>
-        </div>
-        <div id="files-grid" style="display:none"></div>
-      </div>
-    </div>
+    <div id="summary"><h3>📋 Results Summary</h3><div id="summary-rows"></div></div>
   </div>
 
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  DATA
-// ═══════════════════════════════════════════════
-const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const PALETTE = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#1abc9c','#3498db','#9b59b6','#e91e63','#00bcd4','#ff5722','#8bc34a','#607d8b'];
-const GRADE_COLS = {1:'#636e72',2:'#b2bec3',3:'#d63031',4:'#e17055',5:'#fdcb6e',6:'#6c5ce7',7:'#0984e3',8:'#00cec9',9:'#00b894'};
+// ═══════════════════════ CONSTANTS ═══════════════════════
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const PALETTE=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#1abc9c','#3498db','#9b59b6','#e91e63','#00bcd4','#ff5722','#8bc34a','#607d8b'];
+const GRADE_COLS={1:'#636e72',2:'#b2bec3',3:'#d63031',4:'#e17055',5:'#fdcb6e',6:'#6c5ce7',7:'#0984e3',8:'#00cec9',9:'#00b894'};
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-let subjects = [
-  {id:1,name:'Mathematics',color:'#e74c3c'},
-  {id:2,name:'English Literature',color:'#f1c40f'},
-  {id:3,name:'Biology',color:'#2ecc71'},
-];
-let studyLog = {}; // {subjectId: {Mon:secs, Tue:secs, ...}}
-let results  = {}; // {subjectId: {mark:'', grade:''}}
-let notes    = {}; // {subjectId: {text:'', files:[{name,url,type,size}]}}
+// ═══════════════════════ STORAGE ═══════════════════════
+// studyLog: { subjectId: { 'YYYY-MM-DD': seconds } }
+function loadData(){
+  try{
+    const s=localStorage.getItem('sd_subjects');
+    const l=localStorage.getItem('sd_log2');
+    const r=localStorage.getItem('sd_results');
+    return{
+      subjects:s?JSON.parse(s):[
+        {id:1,name:'Mathematics',color:'#e74c3c'},
+        {id:2,name:'English Literature',color:'#f1c40f'},
+        {id:3,name:'Biology',color:'#2ecc71'},
+      ],
+      studyLog:l?JSON.parse(l):{},
+      results:r?JSON.parse(r):{},
+    };
+  }catch(e){return{subjects:[],studyLog:{},results:{}};}
+}
+function save(){
+  try{
+    localStorage.setItem('sd_subjects',JSON.stringify(subjects));
+    localStorage.setItem('sd_log2',JSON.stringify(studyLog));
+    localStorage.setItem('sd_results',JSON.stringify(results));
+  }catch(e){console.warn('Save failed',e);}
+}
 
-let activeTimer = null; // {subjectId, startTime, day}
-let timerInterval = null;
-let elapsed = 0;
-let pickedColor = PALETTE[4];
-let activeNoteSubject = null;
+const _d=loadData();
+let subjects=_d.subjects, studyLog=_d.studyLog, results=_d.results;
+let activeTimer=null, timerInterval=null, elapsed=0;
+let pickedColor=PALETTE[4], activeNoteSubject=null;
+let chartView='week', modalSubjectId=null;
 
-// ═══════════════════════════════════════════════
-//  HELPERS
-// ═══════════════════════════════════════════════
+// ═══════════════════════ HELPERS ═══════════════════════
+function el(id){return document.getElementById(id)}
 function fmtTime(s){
-  if(s<=0)return'—';
+  if(!s||s<=0)return'—';
   const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
   if(h>0)return`${h}h ${m}m`;
   if(m>0)return`${m}m ${sec}s`;
   return`${sec}s`;
 }
+function fmtHM(s){
+  if(!s||s<=0)return'0m';
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);
+  if(h>0&&m>0)return`${h}h ${m}m`;
+  if(h>0)return`${h}h`;
+  return`${m}m`;
+}
+function todayStr(){return new Date().toISOString().slice(0,10)}
 function todayKey(){const d=new Date().getDay();return DAYS[d===0?6:d-1]}
-function subjTotal(id){const l=studyLog[id]||{};return Object.values(l).reduce((a,b)=>a+b,0)}
-function totalAll(){return subjects.reduce((t,s)=>t+subjTotal(s.id),0)}
-function el(id){return document.getElementById(id)}
+function dateToKey(dateStr){const d=new Date(dateStr);return DAYS[d.getDay()===0?6:d.getDay()-1]}
 
-// ═══════════════════════════════════════════════
-//  TABS
-// ═══════════════════════════════════════════════
-function switchTab(name){
+// Get monday of current week
+function weekStart(){
+  const d=new Date();
+  const day=d.getDay();
+  const diff=d.getDate()-(day===0?6:day-1);
+  const mon=new Date(d.setDate(diff));
+  return mon.toISOString().slice(0,10);
+}
+function addDays(dateStr,n){
+  const d=new Date(dateStr);d.setDate(d.getDate()+n);
+  return d.toISOString().slice(0,10);
+}
+function currentWeekDates(){
+  const mon=weekStart();
+  return Array.from({length:7},(_,i)=>addDays(mon,i));
+}
+function getSecsForDate(subjId,dateStr){
+  return(studyLog[subjId]||{})[dateStr]||0;
+}
+function addSecsForDate(subjId,dateStr,secs){
+  if(!studyLog[subjId])studyLog[subjId]={};
+  studyLog[subjId][dateStr]=(studyLog[subjId][dateStr]||0)+secs;
+}
+function subjTotalAll(id){
+  return Object.values(studyLog[id]||{}).reduce((a,b)=>a+b,0);
+}
+function totalAllTime(){
+  return subjects.reduce((t,s)=>t+subjTotalAll(s.id),0);
+}
+
+// Period totals
+function secsInPeriod(subjId,dates){
+  const log=studyLog[subjId]||{};
+  return dates.reduce((t,d)=>t+(log[d]||0),0);
+}
+function getAllDatesInRange(from,to){
+  const dates=[];let cur=from;
+  while(cur<=to){dates.push(cur);cur=addDays(cur,1);}
+  return dates;
+}
+function todayTotal(){
+  const t=todayStr();
+  return subjects.reduce((sum,s)=>sum+getSecsForDate(s.id,t)+(activeTimer&&activeTimer.id===s.id?elapsed:0),0);
+}
+function weekTotal(){
+  const dates=currentWeekDates();
+  return subjects.reduce((sum,s)=>sum+secsInPeriod(s.id,dates)+(activeTimer&&activeTimer.id===s.id?elapsed:0),0);
+}
+function monthTotal(){
+  const now=new Date(),y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0');
+  const from=`${y}-${m}-01`;
+  const to=todayStr();
+  const dates=getAllDatesInRange(from,to);
+  return subjects.reduce((sum,s)=>sum+secsInPeriod(s.id,dates),0);
+}
+function yearTotal(){
+  const y=new Date().getFullYear();
+  const from=`${y}-01-01`,to=todayStr();
+  const dates=getAllDatesInRange(from,to);
+  return subjects.reduce((sum,s)=>sum+secsInPeriod(s.id,dates),0);
+}
+
+// ═══════════════════════ TABS ═══════════════════════
+function switchTab(name,btn){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   el('pane-'+name).classList.add('active');
-  event.currentTarget.classList.add('active');
+  btn.classList.add('active');
   if(name==='results')renderResults();
-  if(name==='notes')renderNotesList();
+  if(name==='stats'){renderStats();renderChart();renderBreakdown();}
 }
 
-// ═══════════════════════════════════════════════
-//  TIMER
-// ═══════════════════════════════════════════════
+// ═══════════════════════ TIMER ═══════════════════════
 function startTimer(id){
   if(activeTimer)stopTimer();
-  activeTimer={id,startTime:Date.now(),day:todayKey()};
+  activeTimer={id,startTime:Date.now(),date:todayStr()};
   elapsed=0;
   timerInterval=setInterval(()=>{
     elapsed=Math.floor((Date.now()-activeTimer.startTime)/1000);
     el('banner-time').textContent=fmtTime(elapsed);
-    renderTimetable();
-    el('total-val').textContent=fmtTime(totalAll()+(elapsed||0));
+    renderSubjects();renderTimetable();
+    el('total-val').textContent=fmtHM(totalAllTime()+elapsed);
   },1000);
   const s=subjects.find(x=>x.id===id);
   el('banner-name').textContent=s.name;
@@ -335,49 +433,66 @@ function stopTimer(){
   if(!activeTimer)return;
   clearInterval(timerInterval);
   const secs=Math.floor((Date.now()-activeTimer.startTime)/1000);
-  const {id,day}=activeTimer;
-  if(!studyLog[id])studyLog[id]={};
-  studyLog[id][day]=(studyLog[id][day]||0)+secs;
+  if(secs>0)addSecsForDate(activeTimer.id,activeTimer.date,secs);
   activeTimer=null;elapsed=0;
   el('active-banner').style.display='none';
-  renderSubjects();renderTimetable();
-  el('total-val').textContent=fmtTime(totalAll());
+  save();renderSubjects();renderTimetable();
+  el('total-val').textContent=fmtHM(totalAllTime());
 }
 
-// ═══════════════════════════════════════════════
-//  SUBJECTS
-// ═══════════════════════════════════════════════
+// ═══════════════════════ MANUAL TIME ═══════════════════════
+function openModal(subjId){
+  modalSubjectId=subjId;
+  const s=subjects.find(x=>x.id===subjId);
+  el('modal-subj-name').textContent=`Adding time for: ${s.name}`;
+  el('m-hours').value='';el('m-mins').value='';
+  el('m-date').value=todayStr();
+  el('modal-overlay').classList.add('open');
+}
+function closeModal(){el('modal-overlay').classList.remove('open');modalSubjectId=null;}
+function saveManualTime(){
+  if(!modalSubjectId)return;
+  const h=parseInt(el('m-hours').value)||0;
+  const m=parseInt(el('m-mins').value)||0;
+  const date=el('m-date').value||todayStr();
+  const secs=(h*3600)+(m*60);
+  if(secs<=0){el('m-hours').style.border='1px solid #e74c3c';return;}
+  addSecsForDate(modalSubjectId,date,secs);
+  save();closeModal();renderSubjects();renderTimetable();
+  el('total-val').textContent=fmtHM(totalAllTime());
+}
+el('modal-overlay').addEventListener('click',e=>{if(e.target===el('modal-overlay'))closeModal();});
+
+// ═══════════════════════ SUBJECTS ═══════════════════════
 function addSubject(){
   const inp=el('subj-input');
   if(!inp.value.trim())return;
   subjects.push({id:Date.now(),name:inp.value.trim(),color:pickedColor});
-  inp.value='';
-  renderSubjects();renderTimetable();renderColorSwatches();
-  renderNotesList();
+  inp.value='';save();renderSubjects();renderTimetable();renderColorSwatches();
 }
 function removeSubject(id){
   if(activeTimer&&activeTimer.id===id)stopTimer();
   subjects=subjects.filter(s=>s.id!==id);
-  renderSubjects();renderTimetable();renderNotesList();
-  if(activeNoteSubject===id){activeNoteSubject=null;showNoteEmpty();}
+  save();renderSubjects();renderTimetable();
 }
 function renderSubjects(){
   const list=el('subject-list');
   if(!subjects.length){list.innerHTML='<div class="no-items">No subjects yet</div>';return;}
   list.innerHTML=subjects.map(s=>{
-    const t=subjTotal(s.id)+(activeTimer&&activeTimer.id===s.id?elapsed:0);
+    const todaySecs=getSecsForDate(s.id,todayStr())+(activeTimer&&activeTimer.id===s.id?elapsed:0);
     const isActive=activeTimer&&activeTimer.id===s.id;
     return`<div class="subj-row">
       <div class="subj-dot" style="background:${s.color}"></div>
       <div class="subj-name">${s.name}</div>
-      <div class="subj-time">${fmtTime(t)}</div>
+      <div class="subj-time">${todaySecs>0?fmtHM(todaySecs):'—'}</div>
       ${isActive
         ?`<button class="btn-stop" onclick="stopTimer()">■ Stop</button>`
-        :`<button class="btn-start" style="background:${s.color}" onclick="startTimer(${s.id})">▶ Start</button>`}
+        :`<button class="btn-start" style="background:${s.color}" onclick="startTimer(${s.id})">▶</button>`}
+      <button class="btn-add-time" onclick="openModal(${s.id})" title="Add time manually">+t</button>
       <button class="btn-del" onclick="removeSubject(${s.id})">×</button>
     </div>`;
   }).join('');
-  el('total-val').textContent=fmtTime(totalAll()+(activeTimer?elapsed:0));
+  el('total-val').textContent=fmtHM(totalAllTime()+(activeTimer?elapsed:0));
 }
 function renderColorSwatches(){
   el('color-swatches').innerHTML=PALETTE.map(c=>
@@ -386,75 +501,182 @@ function renderColorSwatches(){
 }
 function pickColor(c){pickedColor=c;renderColorSwatches();}
 
-// ═══════════════════════════════════════════════
-//  TIMETABLE
-// ═══════════════════════════════════════════════
+// ═══════════════════════ TIMETABLE ═══════════════════════
 function renderTimetable(){
-  const today=todayKey();
-  // head
+  const weekDates=currentWeekDates();
+  const today=todayStr();
   el('tt-head').innerHTML=`<tr>
-    <th style="min-width:130px">Subject</th>
-    ${DAYS.map(d=>`<th class="${d===today?'today':''}" style="min-width:65px;text-align:center">${d}${d===today?' ●':''}</th>`).join('')}
+    <th style="min-width:120px">Subject</th>
+    ${weekDates.map((d,i)=>`<th class="${d===today?'today':''}" style="min-width:62px;text-align:center">${DAYS[i]}${d===today?' ●':''}<br/><span style="font-size:9px;opacity:.5">${d.slice(5)}</span></th>`).join('')}
     <th style="text-align:center">Total</th>
   </tr>`;
   if(!subjects.length){el('tt-body').innerHTML='';el('tt-empty').style.display='block';return;}
   el('tt-empty').style.display='none';
   el('tt-body').innerHTML=subjects.map((s,i)=>{
-    const log=studyLog[s.id]||{};
-    const total=subjTotal(s.id)+(activeTimer&&activeTimer.id===s.id?elapsed:0);
+    const total=subjTotalAll(s.id)+(activeTimer&&activeTimer.id===s.id?elapsed:0);
     return`<tr>
       <td><div style="display:flex;align-items:center;gap:7px"><div class="subj-dot" style="background:${s.color}"></div>${s.name}</div></td>
-      ${DAYS.map(d=>{
-        let secs=(log[d]||0)+(activeTimer&&activeTimer.id===s.id&&activeTimer.day===d?elapsed:0);
+      ${weekDates.map(d=>{
+        let secs=getSecsForDate(s.id,d)+(activeTimer&&activeTimer.id===s.id&&activeTimer.date===d?elapsed:0);
         return`<td style="text-align:center">${secs>0
-          ?`<span class="cell-chip" style="background:${s.color}22;color:${s.color};border:1px solid ${s.color}44">${fmtTime(secs)}</span>`
-          :`<span class="cell-dash">—</span>`}</td>`;
+          ?`<span class="cell-chip" style="background:${s.color}22;color:${s.color};border:1px solid ${s.color}44">${fmtHM(secs)}</span>`
+          :`<span class="cell-dash">–</span>`}</td>`;
       }).join('')}
-      <td style="text-align:center"><span class="cell-total" style="color:${total>0?s.color:'var(--dim)'}">${fmtTime(total)}</span></td>
+      <td style="text-align:center"><span class="cell-total" style="color:${total>0?s.color:'var(--dim)'}">${fmtHM(total)}</span></td>
     </tr>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════
-//  RESULTS
-// ═══════════════════════════════════════════════
-function renderResults(){
-  // legend
-  el('grade-legend').innerHTML=[1,2,3,4,5,6,7,8,9].map(g=>
-    `<div class="grade-dot" style="background:${GRADE_COLS[g]}">${g}</div>`
-  ).join('');
+// ═══════════════════════ STATS ═══════════════════════
+function renderStats(){
+  const cards=[
+    {label:'Today',val:todayTotal(),sub:new Date().toLocaleDateString('en-GB',{weekday:'long'}),bg:'#1a1a2e',accent:'#7c6af7'},
+    {label:'This Week',val:weekTotal(),sub:'Mon – Sun',bg:'#1a2a1a',accent:'#2ecc71'},
+    {label:'This Month',val:monthTotal(),sub:MONTHS[new Date().getMonth()]+' '+new Date().getFullYear(),bg:'#2a1a1a',accent:'#e74c3c'},
+    {label:'This Year',val:yearTotal(),sub:String(new Date().getFullYear()),bg:'#1a1a2a',accent:'#f4c430'},
+  ];
+  el('stat-cards').innerHTML=cards.map(c=>`
+    <div class="stat-card card" style="background:${c.bg};border-color:${c.accent}33">
+      <div class="sc-label" style="color:${c.accent}">${c.label}</div>
+      <div class="sc-val" style="color:${c.accent}">${fmtHM(c.val)}</div>
+      <div class="sc-sub" style="color:${c.accent}">${c.sub}</div>
+    </div>`).join('');
+}
 
-  if(!subjects.length){
-    el('results-list').innerHTML='<div class="card no-items">Add subjects in the Study Timer tab first</div>';
-    return;
+function setChartView(view,btn){
+  chartView=view;
+  document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderChart();renderBreakdown();
+}
+
+function getChartData(){
+  const now=new Date();
+  if(chartView==='week'){
+    const dates=currentWeekDates();
+    return dates.map((d,i)=>({
+      label:DAYS[i],
+      date:d,
+      isToday:d===todayStr(),
+      perSubject:subjects.map(s=>({id:s.id,color:s.color,secs:getSecsForDate(s.id,d)+(activeTimer&&activeTimer.id===s.id&&activeTimer.date===d?elapsed:0)}))
+    }));
   }
+  if(chartView==='month'){
+    const y=now.getFullYear(),m=now.getMonth();
+    const daysInMonth=new Date(y,m+1,0).getDate();
+    const from=`${y}-${String(m+1).padStart(2,'0')}-01`;
+    return Array.from({length:daysInMonth},(_,i)=>{
+      const d=addDays(from,i);
+      return{
+        label:String(i+1),
+        date:d,
+        isToday:d===todayStr(),
+        perSubject:subjects.map(s=>({id:s.id,color:s.color,secs:getSecsForDate(s.id,d)}))
+      };
+    });
+  }
+  if(chartView==='year'){
+    return Array.from({length:12},(_,mi)=>{
+      const y=now.getFullYear();
+      const from=`${y}-${String(mi+1).padStart(2,'0')}-01`;
+      const days=new Date(y,mi+1,0).getDate();
+      const dates=Array.from({length:days},(_,i)=>addDays(from,i));
+      return{
+        label:MONTHS[mi],
+        date:from,
+        isToday:mi===now.getMonth(),
+        perSubject:subjects.map(s=>({id:s.id,color:s.color,secs:secsInPeriod(s.id,dates)}))
+      };
+    });
+  }
+}
+
+function renderChart(){
+  const data=getChartData();
+  if(!data||!subjects.length){
+    el('bar-chart').innerHTML='<div style="color:var(--dim);font-size:13px;padding:20px">Add subjects to see chart data</div>';
+    el('chart-legend').innerHTML='';return;
+  }
+  // total per bar
+  const totals=data.map(d=>d.perSubject.reduce((s,p)=>s+p.secs,0));
+  const max=Math.max(...totals,1);
+  el('bar-chart').innerHTML=data.map((d,i)=>{
+    const total=totals[i];
+    const pct=total/max;
+    // stacked bar: each subject contributes a slice
+    const slices=d.perSubject.filter(p=>p.secs>0).map(p=>{
+      const h=(p.secs/max)*170;
+      return`<div style="height:${h}px;background:${p.color};width:100%"></div>`;
+    }).join('');
+    return`<div class="bar-group">
+      <div class="bar-wrap">
+        <div class="bar" style="height:${Math.max(pct*170,total>0?3:0)}px;background:${d.isToday?'var(--accent)':'#2a2e3f'};overflow:hidden;display:flex;flex-direction:column-reverse" title="${fmtHM(total)}">
+          ${subjects.length>1?slices:`<div style="height:100%;background:${subjects[0]?.color||'var(--accent)'}"></div>`}
+        </div>
+      </div>
+      <div class="bar-label" style="color:${d.isToday?'var(--accent)':'var(--dim)'}">${d.label}</div>
+      <div class="bar-val">${total>0?fmtHM(total):''}</div>
+    </div>`;
+  }).join('');
+  el('chart-legend').innerHTML=subjects.map(s=>`
+    <div class="legend-item"><div class="legend-dot" style="background:${s.color}"></div>${s.name}</div>`).join('');
+}
+
+function renderBreakdown(){
+  const now=new Date();
+  let dates, title;
+  if(chartView==='week'){
+    dates=currentWeekDates();title='This Week — Subject Breakdown';
+  }else if(chartView==='month'){
+    const y=now.getFullYear(),m=now.getMonth();
+    const from=`${y}-${String(m+1).padStart(2,'0')}-01`;
+    const days=new Date(y,m+1,0).getDate();
+    dates=Array.from({length:days},(_,i)=>addDays(from,i));
+    title=`${MONTHS[m]} — Subject Breakdown`;
+  }else{
+    const y=now.getFullYear();
+    dates=getAllDatesInRange(`${y}-01-01`,todayStr());
+    title=`${y} — Subject Breakdown`;
+  }
+  el('breakdown-title').textContent=title;
+  const rows=subjects.map(s=>({s,secs:secsInPeriod(s.id,dates)})).sort((a,b)=>b.secs-a.secs);
+  const maxSecs=Math.max(...rows.map(r=>r.secs),1);
+  if(!rows.length||rows.every(r=>r.secs===0)){
+    el('breakdown-rows').innerHTML='<div style="color:var(--dim);font-size:13px;padding:10px 0">No study sessions recorded for this period yet.</div>';return;
+  }
+  el('breakdown-rows').innerHTML=rows.map(({s,secs})=>`
+    <div class="breakdown-row">
+      <div class="breakdown-name"><div class="subj-dot" style="background:${s.color}"></div>${s.name}</div>
+      <div class="breakdown-bar-wrap"><div class="breakdown-bar" style="width:${secs>0?(secs/maxSecs*100).toFixed(1):0}%;background:${s.color}"></div></div>
+      <div class="breakdown-time">${fmtHM(secs)}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════ RESULTS ═══════════════════════
+function renderResults(){
+  el('grade-legend').innerHTML=[1,2,3,4,5,6,7,8,9].map(g=>
+    `<div class="grade-dot" style="background:${GRADE_COLS[g]}">${g}</div>`).join('');
+  if(!subjects.length){el('results-list').innerHTML='<div class="card no-items">Add subjects in the Study Timer tab first</div>';return;}
   el('results-list').innerHTML=subjects.map(s=>{
     const r=results[s.id]||{mark:'',grade:''};
     const hasBadge=r.grade!=='';
     return`<div class="card result-row">
-      <div class="result-subj">
-        <div class="subj-dot" style="background:${s.color}"></div>
-        <span>${s.name}</span>
-      </div>
+      <div class="result-subj"><div class="subj-dot" style="background:${s.color}"></div><span>${s.name}</span></div>
       <div>
         <div class="label" style="margin-bottom:5px">Mark</div>
-        <input class="mark-input" placeholder="e.g. 78" value="${r.mark}"
-          oninput="setMark(${s.id},this.value)" />
+        <input class="mark-input" placeholder="e.g. 78" value="${r.mark}" oninput="setMark(${s.id},this.value)"/>
       </div>
       <div style="flex:1">
         <div class="label" style="margin-bottom:5px">GCSE Grade</div>
         <div class="grade-picker">
-          ${[1,2,3,4,5,6,7,8,9].map(g=>`
-            <button class="grade-btn${r.grade===g?' sel':''}"
-              style="${r.grade===g?`background:${GRADE_COLS[g]};box-shadow:0 0 12px ${GRADE_COLS[g]}55`:''}"
-              onclick="setGrade(${s.id},${g})">${g}</button>
-          `).join('')}
+          ${[1,2,3,4,5,6,7,8,9].map(g=>`<button class="grade-btn${r.grade===g?' sel':''}"
+            style="${r.grade===g?`background:${GRADE_COLS[g]};box-shadow:0 0 10px ${GRADE_COLS[g]}44`:''}"
+            onclick="setGrade(${s.id},${g})">${g}</button>`).join('')}
         </div>
       </div>
-      <div class="result-badge" id="badge-${s.id}"
-        style="${hasBadge?`display:block;background:${GRADE_COLS[r.grade]}22;border:1px solid ${GRADE_COLS[r.grade]}`:'display:none'}">
+      <div class="result-badge" id="badge-${s.id}" style="${hasBadge?`display:block;background:${GRADE_COLS[r.grade]}22;border:1px solid ${GRADE_COLS[r.grade]}`:''}">
         <div class="big" style="color:${hasBadge?GRADE_COLS[r.grade]:'#fff'}">${hasBadge?r.grade:''}</div>
-        ${r.mark?`<div class="small" style="color:${GRADE_COLS[r.grade]}bb">${r.mark} marks</div>`:''}
+        ${r.mark&&hasBadge?`<div class="small" style="color:${GRADE_COLS[r.grade]}bb">${r.mark} marks</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -462,20 +684,17 @@ function renderResults(){
 }
 function setMark(id,val){
   if(!results[id])results[id]={mark:'',grade:''};
-  results[id].mark=val;
-  updateBadge(id);renderSummary();
+  results[id].mark=val;save();updateBadge(id);renderSummary();
 }
 function setGrade(id,g){
   if(!results[id])results[id]={mark:'',grade:''};
   results[id].grade=results[id].grade===g?'':g;
-  renderResults();
+  save();renderResults();
 }
 function updateBadge(id){
-  const r=results[id]||{};
-  const b=el('badge-'+id);if(!b)return;
+  const r=results[id]||{};const b=el('badge-'+id);if(!b)return;
   if(r.grade){
-    b.style.display='block';
-    b.style.background=GRADE_COLS[r.grade]+'22';
+    b.style.display='block';b.style.background=GRADE_COLS[r.grade]+'22';
     b.style.border=`1px solid ${GRADE_COLS[r.grade]}`;
     b.innerHTML=`<div class="big" style="color:${GRADE_COLS[r.grade]}">${r.grade}</div>${r.mark?`<div class="small" style="color:${GRADE_COLS[r.grade]}bb">${r.mark} marks</div>`:''}`;
   }
@@ -497,89 +716,12 @@ function renderSummary(){
   }).join('');
 }
 
-// ═══════════════════════════════════════════════
-//  NOTES
-// ═══════════════════════════════════════════════
-function renderNotesList(){
-  const list=el('notes-subj-list');
-  if(!subjects.length){list.innerHTML='<div style="color:var(--dim);font-size:12px;font-family:var(--sans)">No subjects yet</div>';return;}
-  list.innerHTML=subjects.map(s=>{
-    const fc=((notes[s.id]||{}).files||[]).length;
-    return`<div class="note-subj-item${activeNoteSubject===s.id?' active':''}" onclick="openNote(${s.id})">
-      <div class="subj-dot" style="background:${s.color}"></div>
-      <div style="flex:1;font-size:13px;font-weight:${activeNoteSubject===s.id?600:400}">${s.name}</div>
-      ${fc>0?`<span class="badge" style="background:${s.color}33;color:${s.color}">${fc}</span>`:''}
-    </div>`;
-  }).join('');
-}
-function openNote(id){
-  activeNoteSubject=id;
-  const s=subjects.find(x=>x.id===id);
-  const n=notes[id]||{text:'',files:[]};
-  el('note-empty').style.display='none';
-  el('note-editor').style.display='block';
-  el('note-dot').style.background=s.color;
-  el('note-title').textContent=s.name;
-  el('note-textarea').value=n.text||'';
-  el('note-textarea').placeholder=`Write your ${s.name} notes here…`;
-  renderFiles(id);
-  renderNotesList();
-}
-function showNoteEmpty(){
-  el('note-empty').style.display='flex';
-  el('note-editor').style.display='none';
-}
-function saveNoteText(){
-  if(!activeNoteSubject)return;
-  if(!notes[activeNoteSubject])notes[activeNoteSubject]={text:'',files:[]};
-  notes[activeNoteSubject].text=el('note-textarea').value;
-}
-function handleFiles(e){
-  if(!activeNoteSubject)return;
-  if(!notes[activeNoteSubject])notes[activeNoteSubject]={text:'',files:[]};
-  Array.from(e.target.files).forEach(f=>{
-    notes[activeNoteSubject].files.push({name:f.name,type:f.type,size:f.size,url:URL.createObjectURL(f)});
-  });
-  e.target.value='';
-  renderFiles(activeNoteSubject);
-  renderNotesList();
-}
-function removeFile(idx){
-  if(!activeNoteSubject)return;
-  notes[activeNoteSubject].files.splice(idx,1);
-  renderFiles(activeNoteSubject);
-  renderNotesList();
-}
-function renderFiles(id){
-  const files=(notes[id]||{}).files||[];
-  const dz=el('drop-zone'),fg=el('files-grid');
-  if(!files.length){dz.style.display='block';fg.style.display='none';return;}
-  dz.style.display='none';fg.style.display='grid';
-  fg.innerHTML=files.map((f,i)=>{
-    const isImg=f.type.startsWith('image/');
-    const isPdf=f.type==='application/pdf';
-    const icon=isPdf?'📄':isImg?'🖼️':'📎';
-    return`<div class="file-card">
-      ${isImg?`<img class="file-thumb" src="${f.url}" alt="${f.name}"/>`:''}
-      <div class="file-info">
-        <div style="font-size:${isImg?'':18}px;margin-bottom:${isImg?0:4}px">${isImg?'':icon}</div>
-        <div class="file-name" title="${f.name}">${f.name}</div>
-        <div class="file-size">${(f.size/1024).toFixed(1)} KB</div>
-        <div class="file-actions">
-          <a class="f-open" href="${f.url}" target="_blank" download="${f.name}">Open</a>
-          <button class="f-del" onclick="removeFile(${i})">✕</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════
+// ═══════════════════════ INIT ═══════════════════════
 renderColorSwatches();
 renderSubjects();
 renderTimetable();
 </script>
 </body>
 </html>
+HTMLEOF
+echo "done"
